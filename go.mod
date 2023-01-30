@@ -1,4 +1,4 @@
-module slider.go
+module github.com/hopefulTex/slider
 
 go 1.19
 
