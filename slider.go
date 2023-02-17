@@ -27,47 +27,47 @@ var DefaultKeyMap = KeyMap{
 }
 
 type Model struct {
-	min          int		// minimum number
-	max          int		// maximum number
-	steps        int		// number incremented per tick
-	value        int		// current value selected
-	width        int		// width of the bar
-	handleRune   rune		// symbol for the slider
-	barRune      rune		// symbol for the slide
-	showHiLo     bool		// show the min/max values allowed
-	showTop      bool		// show min/max on top of the slider
-	showValue    bool		// show the current value
-	showBottom   bool		// show min/max under the slider
-	showValLeft  bool		// show current value to the left of the slider
-	showValRight bool		// show current value to the right of the slider
-	
+	min          int  // minimum number
+	max          int  // maximum number
+	steps        int  // number incremented per tick
+	value        int  // current value selected
+	width        int  // width of the bar
+	handleRune   rune // symbol for the slider
+	barRune      rune // symbol for the slide
+	ShowHiLo     bool // show the min/max values allowed
+	ShowTop      bool // show min/max on top of the slider
+	ShowValue    bool // show the current value
+	ShowBottom   bool // show min/max under the slider
+	ShowValLeft  bool // show current value to the left of the slider
+	ShowValRight bool // show current value to the right of the slider
+
 	fillingColor bool
-	handleColor	lipgloss.Color
-	barColor		lipgloss.Color
-	textColor	lipgloss.Color
-	border	lipgloss.Border
+	handleColor  lipgloss.Color
+	barColor     lipgloss.Color
+	textColor    lipgloss.Color
+	border       lipgloss.Border
 }
 
 func New() Model {
 	return Model{
-		min:        0,
-		max:        10,
-		steps:      1,
-		value:      0,
-		width:      30,
-		handleRune: '┃',
-		barRune:    '─',
-		showHiLo: false,
-		showTop:    true,
-		showBottom: true,
-		showValRight: false,
-		showValLeft: false,
-		showValue: true,
-		fillingColor: false,	// bar colors change only if behind the slider
-		handleColor: lipgloss.Color("#894593"),
-		barColor: lipgloss.Color("#5a32e2"),
-		textColor: lipgloss.Color(""),
-		border:      lipgloss.NormalBorder(),
+		min:          0,
+		max:          10,
+		steps:        1,
+		value:        0,
+		width:        30,
+		handleRune:   '┃',
+		barRune:      '─',
+		ShowHiLo:     false,
+		ShowTop:      true,
+		ShowBottom:   true,
+		ShowValRight: false,
+		ShowValLeft:  false,
+		ShowValue:    true,
+		fillingColor: false, // bar colors change only if behind the slider
+		handleColor:  lipgloss.Color("#894593"),
+		barColor:     lipgloss.Color("#5a32e2"),
+		textColor:    lipgloss.Color(""),
+		border:       lipgloss.NormalBorder(),
 	}
 }
 
@@ -99,7 +99,7 @@ func (m Model) View() string {
 	var value strings.Builder
 	var padding int = max(len(fmt.Sprintf("%d", m.max)), len(fmt.Sprintf("%d", m.min)))
 
-	if m.showValue {
+	if m.ShowValue {
 		value.WriteString(fmt.Sprintf("%d", m.value))
 		var tmp int = padding - value.Len()
 		for i := 0; i < tmp; i++ {
@@ -107,8 +107,8 @@ func (m Model) View() string {
 		}
 	}
 
-	if m.showHiLo {
-		if m.showValLeft && m.showValue {
+	if m.ShowHiLo {
+		if m.ShowValLeft && m.ShowValue {
 			for i := 0; i <= padding; i++ {
 				rangeString.WriteRune(' ')
 			}
@@ -121,13 +121,13 @@ func (m Model) View() string {
 		rangeString.WriteString(fmt.Sprintf("%d\n", m.max))
 	}
 
-	if m.showTop {
+	if m.ShowTop {
 		slider.WriteString(rangeString.String())
 	}
 
-	if m.showValLeft {
-		slider.WriteString(fmt.Sprintf("%s ",value.String()))
-		
+	if m.ShowValLeft {
+		slider.WriteString(fmt.Sprintf("%s ", value.String()))
+
 	}
 
 	var decSteps float64 = float64(m.width) / float64((m.max - m.min))
@@ -139,29 +139,29 @@ func (m Model) View() string {
 				if i <= int(decSteps*float64(m.value)) {
 					bar.WriteString(
 						barStyle.
-						Foreground(m.barColor).
-						Render(string(m.barRune)))	
+							Foreground(m.barColor).
+							Render(string(m.barRune)))
 				} else {
 					bar.WriteString(
 						barStyle.UnsetForeground().Render(string(m.barRune)))
 				}
 			} else {
-			bar.WriteString(barStyle.Render(string(m.barRune)))
+				bar.WriteString(barStyle.Render(string(m.barRune)))
 			}
 		}
 	}
 	slider.WriteString(bar.String())
 
-	if m.showValRight {
-		slider.WriteString(fmt.Sprintf(" %s",value.String()))
+	if m.ShowValRight {
+		slider.WriteString(fmt.Sprintf(" %s", value.String()))
 	}
 
-	if m.showBottom && m.showHiLo {
+	if m.ShowBottom && m.ShowHiLo {
 		slider.WriteRune('\n')
 		slider.WriteString(rangeString.String())
 	}
 
-return lipgloss.NewStyle().Border(m.border).Render(slider.String())
+	return lipgloss.NewStyle().Border(m.border).Render(slider.String())
 }
 
 func min(nums ...int) int {
@@ -185,4 +185,3 @@ func max(nums ...int) int {
 
 	return largest
 }
-
