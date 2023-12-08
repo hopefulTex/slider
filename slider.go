@@ -27,10 +27,10 @@ var DefaultKeyMap = KeyMap{
 }
 
 type Model struct {
-	min          int  // minimum number
-	max          int  // maximum number
+	Min          int  // minimum number
+	Max          int  // maximum number
 	steps        int  // number incremented per tick
-	value        int  // current value selected
+	Value        int  // current value selected
 	width        int  // width of the bar
 	handleRune   rune // symbol for the slider
 	barRune      rune // symbol for the slide
@@ -50,10 +50,10 @@ type Model struct {
 
 func New() Model {
 	return Model{
-		min:          0,
-		max:          10,
+		Min:          0,
+		Max:          10,
 		steps:        1,
-		value:        0,
+		Value:        0,
 		width:        30,
 		handleRune:   '┃',
 		barRune:      '─',
@@ -80,9 +80,9 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, DefaultKeyMap.Increment):
-			m.value = (min(m.value+m.steps, m.max))
+			m.Value = (min(m.Value+m.steps, m.Max))
 		case key.Matches(msg, DefaultKeyMap.Decrement):
-			m.value = (max(m.value-m.steps, m.min))
+			m.Value = (max(m.Value-m.steps, m.Min))
 		}
 	}
 
@@ -97,10 +97,10 @@ func (m Model) View() string {
 	var bar strings.Builder
 	var slider strings.Builder
 	var value strings.Builder
-	var padding int = max(len(fmt.Sprintf("%d", m.max)), len(fmt.Sprintf("%d", m.min)))
+	var padding int = max(len(fmt.Sprintf("%d", m.Max)), len(fmt.Sprintf("%d", m.Min)))
 
 	if m.ShowValue {
-		value.WriteString(fmt.Sprintf("%d", m.value))
+		value.WriteString(fmt.Sprintf("%d", m.Value))
 		var tmp int = padding - value.Len()
 		for i := 0; i < tmp; i++ {
 			value.WriteRune(' ')
@@ -113,12 +113,12 @@ func (m Model) View() string {
 				rangeString.WriteRune(' ')
 			}
 		}
-		rangeString.WriteString(fmt.Sprintf("%d", m.min))
-		var tmp int = m.width - len(fmt.Sprintf("%d", m.min)) - len(fmt.Sprintf("%d", m.max))
+		rangeString.WriteString(fmt.Sprintf("%d", m.Min))
+		var tmp int = m.width - len(fmt.Sprintf("%d", m.Min)) - len(fmt.Sprintf("%d", m.Max))
 		for i := 0; i <= tmp; i++ {
 			rangeString.WriteRune(' ')
 		}
-		rangeString.WriteString(fmt.Sprintf("%d\n", m.max))
+		rangeString.WriteString(fmt.Sprintf("%d\n", m.Max))
 	}
 
 	if m.ShowTop {
@@ -130,13 +130,13 @@ func (m Model) View() string {
 
 	}
 
-	var decSteps float64 = float64(m.width) / float64((m.max - m.min))
+	var decSteps float64 = float64(m.width) / float64((m.Max - m.Min))
 	for i := 0; i <= m.width; i++ {
-		if i == int(decSteps*float64(m.value)) {
+		if i == int(decSteps*float64(m.Value)) {
 			bar.WriteString(handleStyle.Render(string(m.handleRune)))
 		} else {
 			if m.fillingColor {
-				if i <= int(decSteps*float64(m.value)) {
+				if i <= int(decSteps*float64(m.Value)) {
 					bar.WriteString(
 						barStyle.
 							Foreground(m.barColor).
